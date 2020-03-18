@@ -1,52 +1,36 @@
 language: cpp
 
-
 matrix:
   include:
     - os: linux
-      dist: trusty
+      dist: xenial
       sudo: required
       env: TYPE=Debug
 
     - os: linux
-      dist: trusty
+      dist: xenial
       sudo: required
       env: TYPE=Release
-      
-    - os: linux
-      dist: trusty
+
+    - os: osx
       sudo: required
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-trusty-3.9
-          packages:
-            - clang-3.9
-      env:
-        - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
+      env: 
         - TYPE=Release
 
-    - os: linux
-      dist: trusty
+    - os: osx
       sudo: required
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-trusty-3.9
-          packages:
-            - clang-3.9
-      env:
-        - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
+      env: 
         - TYPE=Debug
-
+      
 before_install:
   - eval "${MATRIX_EVAL}"
   - git clone https://github.com/emp-toolkit/emp-readme.git
   - bash ./emp-readme/scripts/install_packages.sh
-  - bash ./emp-readme/scripts/install_relic.sh
 
 script:
-  - cmake -DCMAKE_BUILD_TYPE=$TYPE . && make
+  - while sleep 400; do echo "=====[ $SECONDS seconds ]====="; done &
+  - cmake -DCMAKE_BUILD_TYPE=$TYPE .
+  - make 
   - echo "Testing Basic Primitives"
   - ./bin/prp
   - ./bin/prg
@@ -57,4 +41,4 @@ script:
   - echo "Testing Circuits"
   - ./bin/bit
   - ./bin/int
-  - ./bin/float
+  - ./bin/float32

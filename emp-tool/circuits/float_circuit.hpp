@@ -1,9 +1,9 @@
 inline Float::Float(int value_length, int expnt_length, double input, int party) {
-   double abs = input > 0 ? input:-1*input;
+   double abs = std::abs(input);
    double lo = pow(2, value_length-2);
    double up = pow(2, value_length-1);
    int p = 0;
-   while(abs < lo) {abs*=2;--p;}
+   while(abs > 0. && abs < lo) {abs*=2;--p;}
    while(abs >= up) {abs/=2;++p;}
    expnt = Integer(expnt_length, p, party);
    value = Integer(value_length, (long long)(abs*(input > 0 ? 1: -1)), party);
@@ -18,15 +18,15 @@ inline Float Float::If(const Bit & select, const Float& d) {
 
 template<>
 inline string Float::reveal<string>(int party) const {
-   double val = value.reveal<long long>(party);
-   double exp = expnt.reveal<long long>(party);
+   double val = value.reveal<int64_t>(party);
+   double exp = expnt.reveal<int64_t>(party);
    return std::to_string(val*pow(2.0, exp)); 
 }
 
 template<>
 inline double Float::reveal<double>(int party) const {
-   double val = value.reveal<long long>(party);
-   double exp = expnt.reveal<long long>(party);
+   double val = value.reveal<int64_t>(party);
+   double exp = expnt.reveal<int64_t>(party);
    return val*pow(2.0, exp); 
 }
 
